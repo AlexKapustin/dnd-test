@@ -1,3 +1,5 @@
+let dragElement = null;
+
 function handleDragStart(e) {
     // Target (this) element is the source node.
     this.style.opacity = '0.4';
@@ -8,7 +10,7 @@ function handleDragStart(e) {
     e.dataTransfer.setData('text/html', this.innerHTML);
     // e.dataTransfer.setData("text", e.target.id);
 
-
+    dragElement = this.cloneNode(true);
 }
 
 function handleDragOver(e) {
@@ -23,6 +25,11 @@ function handleDragOver(e) {
 
 function handleDragLeave(e) {
     this.classList.remove('over');  // this / e.target is previous target element.
+    console.log('drag Leave', e.target);
+
+    if (dragElement) {
+        e.target.removeChild(dragElement);
+    }
 }
 
 
@@ -65,19 +72,23 @@ function handleDragEnter(e) {
     // this / e.target is the current hover target.
     this.classList.add('over');
 
-    console.log(e.target);
+    console.log('drag Enter', e.target);
 
     // console.log(e.target);
+
+    if (dragElement) {
+        e.target.appendChild(dragElement);
+    }
 }
 
 window.addEventListener('load', function () {
     cols = document.querySelectorAll('#columns .column');
     [].forEach.call(cols, function(col) {
         col.addEventListener('dragstart', handleDragStart, false);
-        col.addEventListener('dragenter', handleDragEnter, false)
-        col.addEventListener('dragover', handleDragOver, false);
-        col.addEventListener('dragleave', handleDragLeave, false);
-        col.addEventListener('drop', handleDrop, false);
+        // col.addEventListener('dragenter', handleDragEnter, false)
+        // col.addEventListener('dragover', handleDragOver, false);
+        // col.addEventListener('dragleave', handleDragLeave, false);
+        // col.addEventListener('drop', handleDrop, false);
         col.addEventListener('dragend', handleDragEnd, false);
     });
 
@@ -89,6 +100,10 @@ window.addEventListener('load', function () {
         n.addEventListener('dragleave', handleDragLeave, false);
         n.addEventListener('drop', handleDrop, false);
         n.addEventListener('dragend', handleDragEnd, false);
+
+        n.addEventListener('dragenter', handleDragEnter, false)
+        n.addEventListener('dragleave', handleDragLeave, false);
+
     }
 
 
