@@ -30,14 +30,36 @@ class KanbanBoard {
 
         for (let column of columns) {
             let items = column.querySelectorAll('[data-role="drag-item"]');
-            for (let i = 0; i < items.length; i++) {
-                let item = items[i];
-                if (i === 0) { // insert first drop zone
-                    this.initDropZoneItem(item, false);
-                }
+            for (let item of items) {
                 item.setAttribute('draggable', true);
                 item.addEventListener("dragstart", this.dragStartHandler.bind(this, item));
                 item.addEventListener("dragend", this.dragEndHandler.bind(this, item))
+            }
+        }
+    }
+
+    initDropZoneItems(currentItem) {
+        let columns = this.placeholder.querySelectorAll(' [data-role="column"]');
+        for (let column of columns) {
+            let items = column.querySelectorAll('[data-role="drag-item"]');
+
+            if (items.length === 0) {
+                this.initDropZoneItem(column.firstChild);
+
+                continue;
+            }
+
+            let init = false;
+            for (let i = 0; i < items.length; i++) {
+                let item = items[i];
+                if (currentItem === item) {
+                    continue;
+                }
+
+                if (!init) { // insert first drop zone
+                    init = true;
+                    this.initDropZoneItem(item, false);
+                }
 
                 this.initDropZoneItem(item);
             }
@@ -76,7 +98,7 @@ class KanbanBoard {
         event.target.classList.add('is-moving');
         event.target.setAttribute('data-moving', '1');
         // element.classList.add('is-moving');
-
+        this.initDropZoneItems(event.target);
     }
 
     dragEndHandler(element, event) {
@@ -86,7 +108,7 @@ class KanbanBoard {
 
         let dropItems = this.placeholder.querySelectorAll('[data-role="drop-item"]');
         for (let dropItem of dropItems) {
-            dropItem.classList.remove('active');
+            dropItem.remove();
         }
 
         // add the 'is-moved' class for 600ms then remove it
@@ -115,6 +137,9 @@ class KanbanBoard {
         }
 
         event.target.classList.add('hovered');
+
+        let transitElement = this.placeholder.querySelector('[data-moving]');
+        event.target.parentNode.insertBefore(transitElement, event.target);
     }
 
     containerDragLeaveHandler(column, event) {

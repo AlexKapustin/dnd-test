@@ -99,15 +99,11 @@ ul {
 .drag-inner-list {
   min-height: 50px;
   .drop-item {
-    border: 2px solid black;
-    margin: 10px;
-    height: 10px;
+    border-top: 1px solid black;
+    //margin: 10px;
+    //height: 1px;
     background: rgba(0, 0, 0, 0.4);
     transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-    visibility: hidden;
-    &.active {
-      visibility: visible;
-    }
     &.hovered {
       border: 2px solid rgba(0, 0, 0, 0.2);
     }
@@ -157,8 +153,8 @@ ul {
   &.is-moving {
     transform: scale(1.5);
     background: rgba(black, 0.8);
+    opacity: 0.2;
   }
-
 }
 
 .drag-header-more {
@@ -216,9 +212,6 @@ ul {
   user-select: none !important;
 }
 
-.gu-transit {
-  opacity: 0.2;
-}
 
 /* Demo info */
 
