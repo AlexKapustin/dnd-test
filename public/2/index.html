@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .box {
+            height: 100px;
+            width: 100px;
+            background-color: black;
+            position: relative;
+            top: 5px;
+            left: 5px;
+            cursor: pointer;
+        }
+
+        .held {
+            border: solid 10px black;
+            background-color: black;
+        }
+
+        .holder {
+            height: 110px;
+            width: 110px;
+            margin: 10px;
+            border: solid 5px black;
+            background-color: white;
+            display: inline-block;
+        }
+
+        .hovered {
+            border: dotted 5px black;
+        }
+
+        .invisible {
+            display: none;
+        }
+
+        #container {
+            margin: auto;
+            top: 100px;
+            width: 400px;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <div class="holder">
+        <div class="box" draggable="true">              </div>
+    </div>
+
+    <div class="holder">
+    </div>
+</div>
+
+
+<script>
+    class App {
+
+        static init() {
+
+            App.box = document.getElementsByClassName('box')[0]
+
+            App.box.addEventListener("dragstart", App.dragstart)
+            App.box.addEventListener("dragend", App.dragend)
+
+            const containers = document.getElementsByClassName('holder')
+
+            for(const container of containers) {
+                container.addEventListener("dragover", App.dragover)
+                container.addEventListener("dragenter", App.dragenter)
+                container.addEventListener("dragleave", App.dragleave)
+                container.addEventListener("drop", App.drop)
+            }
+        }
+
+        static dragstart(e) {
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.clearData('text');
+            e.dataTransfer.setData('text', this.id);
+
+            this.classList.add('drag');
+
+            this.classList.add('held');
+            setTimeout(()=>this.classList.add("invisible"), 0);
+        }
+
+        static dragend() {
+            this.classList.remove("hovered");
+            this.classList.remove("invisible");
+            this.classList.add("box");
+            this.classList.remove("held");
+        }
+
+        static dragover(e) {
+            e.preventDefault()
+        }
+
+        static dragenter(e) {
+            e.preventDefault()
+            this.classList.add("hovered");
+        }
+
+        static dragleave() {
+            this.classList.remove("hovered");
+        }
+
+        static drop() {
+            // this.className = "holder"
+            this.classList.remove('hovered');
+            this.append(App.box)
+        }
+
+        swapElements(obj1, obj2) {
+            // save the location of obj2
+            let parent2 = obj2.parentNode;
+            let next2 = obj2.nextSibling;
+            // special case for obj1 is the next sibling of obj2
+            if (next2 === obj1) {
+                // just put obj1 before obj2
+                parent2.insertBefore(obj1, obj2);
+            } else {
+                // insert obj2 right before obj1
+                obj1.parentNode.insertBefore(obj2, obj1);
+
+                // now insert obj1 where obj2 was
+                if (next2) {
+                    // if there was an element after obj2, then insert obj1 right before that
+                    parent2.insertBefore(obj1, next2);
+                } else {
+                    // otherwise, just append as last child
+                    parent2.appendChild(obj1);
+                }
+            }
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", App.init)
+</script>
+</body>
+</html>

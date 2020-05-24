@@ -45,13 +45,6 @@ function handleDrop(e) {
     e.target.innerHTML += data;
 
     console.log('drop', e.target, e.dataTransfer);
-
-    // e.dataTransfer.clearData();
-
-    // if (e.stopPropagation) {
-    //     e.stopPropagation(); // stops the browser from redirecting.
-    // }
-
 }
 
 function handleDragEnd (e)
