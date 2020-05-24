@@ -1,6 +1,5 @@
 // https://codepen.io/ettrics/embed/QbPEeg?height=450&theme-id=0&slug-hash=QbPEeg&default-tab=result&user=ettrics&embed-version=2&pen-title=Kanban%20Drag%20and%20Drop&preview=true&name=cp_embed_2#result-box
-// Variant with predefined drop zones
-
+// Variant with determine where to insert in real-time (may work slow)
 class KanbanBoard {
     constructor(placeholder) {
         this.placeholder = document.querySelector(placeholder);
@@ -25,40 +24,22 @@ class KanbanBoard {
         return document.body[scrollProp];
     }
 
-    init() {
+    init () {
         let columns = this.placeholder.querySelectorAll(' [data-role="column"]');
 
         for (let column of columns) {
+            column.addEventListener("dragover", this.containerDragOverHandler.bind(this, column));
+            column.addEventListener("dragenter", this.containerDragEnterHandler.bind(this, column))
+            column.addEventListener("dragleave", this.containerDragLeaveHandler.bind(this, column))
+            column.addEventListener("drop", this.containerDragDropHandler.bind(this, column))
+
             let items = column.querySelectorAll('[data-role="drag-item"]');
-            for (let i = 0; i < items.length; i++) {
-                let item = items[i];
-                if (i === 0) { // insert first drop zone
-                    this.initDropZoneItem(item, false);
-                }
+            for (let item of items) {
                 item.setAttribute('draggable', true);
                 item.addEventListener("dragstart", this.dragStartHandler.bind(this, item));
                 item.addEventListener("dragend", this.dragEndHandler.bind(this, item))
-
-                this.initDropZoneItem(item);
             }
         }
-    }
-
-    initDropZoneItem(item, after = true) {
-        let dropZone = document.createElement('li');
-        dropZone.classList.add('drop-item');
-        dropZone.setAttribute('data-role', 'drop-item');
-
-        if (after) {
-            item.parentNode.insertBefore(dropZone, item.nextSibling);
-        } else {
-            item.parentNode.insertBefore(dropZone, item);
-        }
-
-        dropZone.addEventListener("dragover", this.containerDragOverHandler.bind(this, dropZone));
-        dropZone.addEventListener("dragenter", this.containerDragEnterHandler.bind(this, dropZone))
-        dropZone.addEventListener("dragleave", this.containerDragLeaveHandler.bind(this, dropZone))
-        dropZone.addEventListener("drop", this.containerDragDropHandler.bind(this, dropZone))
     }
 
     dragStartHandler(element, event) {
@@ -67,11 +48,6 @@ class KanbanBoard {
         event.dataTransfer.dropEffect = 'move';
         // event.dataTransfer.clearData('text');
         // event.dataTransfer.setData('text', this.id);
-
-        let dropItems = this.placeholder.querySelectorAll('[data-role="drop-item"]');
-        for (let dropItem of dropItems) {
-            dropItem.classList.add('active');
-        }
 
         event.target.classList.add('is-moving');
         event.target.setAttribute('data-moving', '1');
@@ -84,11 +60,6 @@ class KanbanBoard {
         event.target.classList.remove('is-moving');
         event.target.removeAttribute('data-moving');
 
-        let dropItems = this.placeholder.querySelectorAll('[data-role="drop-item"]');
-        for (let dropItem of dropItems) {
-            dropItem.classList.remove('active');
-        }
-
         // add the 'is-moved' class for 600ms then remove it
         window.setTimeout(function() {
             event.target.classList.add('is-moved');
@@ -100,13 +71,17 @@ class KanbanBoard {
 
     containerDragOverHandler(column, event) {
         event.preventDefault();
+        let x = event.x,
+            y = event.y;
+        let elementMouseIsOver = document.elementFromPoint(x, y);
+
+        // TODO: check whether insert element after or before.
     }
 
     containerDragEnterHandler(column, event) {
         console.log('Drag Enter', event);
         let x = event.x,
             y = event.y,
-            relatedTarget = event.relatedTarget,
             item = this.placeholder.querySelector('[data-moving]');
 
         console.log(relatedTarget);
@@ -114,11 +89,10 @@ class KanbanBoard {
             console.log(this.getOffset(relatedTarget));
         }
 
-        event.target.classList.add('hovered');
     }
 
     containerDragLeaveHandler(column, event) {
-        event.target.classList.remove('hovered');
+
     }
 
     containerDragDropHandler(column, event) {

@@ -33,11 +33,6 @@ ul {
   @media (max-width: 690px) {
     .drag-column {
       margin-bottom: 30px; } }
-  .drag-column h2 {
-    font-size: 0.8rem;
-    margin: 0;
-    text-transform: uppercase;
-    font-weight: 600; }
   .drag-column-on-hold .drag-column-header,
   .drag-column-on-hold .is-moved,
   .drag-column-on-hold .drag-options {
@@ -60,9 +55,37 @@ ul {
   align-items: center;
   justify-content: space-between;
   padding: 10px; }
+  .drag-column-header label {
+    font-size: 0.8rem;
+    margin: 0;
+    text-transform: uppercase;
+    font-weight: 600; }
 
 .drag-inner-list {
   min-height: 50px; }
+  .drag-inner-list .drop-item {
+    border: 2px solid black;
+    margin: 10px;
+    height: 10px;
+    background: rgba(0, 0, 0, 0.4);
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    visibility: hidden; }
+    .drag-inner-list .drop-item.active {
+      visibility: visible; }
+    .drag-inner-list .drop-item.hovered {
+      border: 2px solid rgba(0, 0, 0, 0.2); }
+
+.drag-column-on-hold .drop-item.hovered {
+  border: 2px solid #FB7D44; }
+
+.drag-column-in-progress .drop-item.hovered {
+  border: 2px solid #2A92BF; }
+
+.drag-column-needs-review .drop-item.hovered {
+  border: 2px solid #F4CE46; }
+
+.drag-column-approved .drop-item.hovered {
+  border: 2px solid #00B961; }
 
 .drag-item {
   margin: 10px;

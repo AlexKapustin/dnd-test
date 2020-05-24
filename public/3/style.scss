@@ -49,13 +49,6 @@ ul {
     margin-bottom: 30px;
   }
 
-  h2 {
-    font-size: 0.8rem;
-    margin: 0;
-    text-transform: uppercase;
-    font-weight: 600;
-  }
-
   &-on-hold {
     .drag-column-header,
     .is-moved,
@@ -94,10 +87,65 @@ ul {
   align-items: center;
   justify-content: space-between;
   padding: 10px;
+
+  label {
+    font-size: 0.8rem;
+    margin: 0;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
 }
 
 .drag-inner-list {
   min-height: 50px;
+  .drop-item {
+    border: 2px solid black;
+    margin: 10px;
+    height: 10px;
+    background: rgba(0, 0, 0, 0.4);
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    visibility: hidden;
+    &.active {
+      visibility: visible;
+    }
+    &.hovered {
+      border: 2px solid rgba(0, 0, 0, 0.2);
+    }
+  }
+}
+
+.drag-column {
+  &-on-hold {
+    .drop-item {
+      &.hovered {
+        border: 2px solid $on-hold;
+      }
+    }
+  }
+
+  &-in-progress {
+    .drop-item {
+      &.hovered {
+        border: 2px solid $in-progress;
+      }
+    }
+  }
+
+  &-needs-review {
+    .drop-item {
+      &.hovered {
+        border: 2px solid $needs-review;
+      }
+    }
+  }
+
+  &-approved {
+    .drop-item {
+      &.hovered {
+        border: 2px solid $approved;
+      }
+    }
+  }
 }
 
 .drag-item {
